@@ -7,21 +7,23 @@
  * Every name, address, school, funder, and amount is invented. Nothing is copied from the real
  * club database.
  *
+ * DATABASE
+ *   Uses the same DATABASE_URL as the app (env var, or the DATABASE_URL= line in .env) -- in the
+ *   demo copy of the repo that already points at the separate demo database.
+ *
  * SAFETY
- *   - Only reads DEMO_DATABASE_URL (env var, or a DEMO_DATABASE_URL= line in .env), never
- *     DATABASE_URL, so it can't accidentally point at the real production database.
  *   - Refuses to touch a database that holds any roster/attendance/log row it didn't create
- *     (every seeded row is tagged with raw_payload.demoSeed = true).
+ *     (every seeded row is tagged with raw_payload.demoSeed = true), so pointing it at the real
+ *     database by mistake stops before anything is written.
  *   - Dry run by default. Nothing is written unless you pass --apply.
  *
  * FIRST TIME
- *   The app creates the tables on startup, so start it once against the demo database first:
- *     DATABASE_URL=<demo url> npm start      (then stop it)
+ *   The app creates the tables on startup, so run `npm start` once first (then stop it).
  *
  * USAGE
- *   DEMO_DATABASE_URL=postgres://... node scripts/seed-demo-data.js                 dry run: shows what it would insert
- *   DEMO_DATABASE_URL=postgres://... node scripts/seed-demo-data.js --apply         insert into an empty demo database
- *   DEMO_DATABASE_URL=postgres://... node scripts/seed-demo-data.js --apply --reset wipe the old demo data and re-seed
+ *   npm run seed:demo                        dry run: shows what it would insert
+ *   npm run seed:demo -- --apply             insert into an empty demo database
+ *   npm run seed:demo -- --apply --reset     wipe the old demo data and re-seed
  *
  * OPTIONS
  *   --people N     roster size (default 90)
@@ -52,18 +54,20 @@ let HISTORY_DAYS = DAYS; // widened in main() so history starts on the 1st of a 
 const SEED = Number(argValue("--seed", 42)) || 42;
 const TIME_ZONE = "America/Chicago";
 
-function readDemoUrlFromEnvFile() {
+// Reads a KEY=value line from .env (same file server.js loads), so the script uses the same
+// database the app does without having to set anything extra.
+function readFromEnvFile(key) {
   const envPath = path.join(__dirname, "..", ".env");
   if (!fs.existsSync(envPath)) return "";
   const line = fs
     .readFileSync(envPath, "utf8")
     .split(/\r?\n/)
-    .find((row) => row.trim().startsWith("DEMO_DATABASE_URL="));
+    .find((row) => row.trim().startsWith(`${key}=`));
   return line ? line.slice(line.indexOf("=") + 1).trim().replace(/^["']|["']$/g, "") : "";
 }
 
-const databaseUrl = process.env.DEMO_DATABASE_URL || readDemoUrlFromEnvFile();
-const databaseSsl = String(process.env.DATABASE_SSL || "true").toLowerCase() !== "false";
+const databaseUrl = process.env.DATABASE_URL || readFromEnvFile("DATABASE_URL");
+const databaseSsl = String(process.env.DATABASE_SSL || readFromEnvFile("DATABASE_SSL") || "true").toLowerCase() !== "false";
 
 // ---------------------------------------------------------------------------------------------
 // Seeded randomness (so the same --seed gives the same demo every time)
@@ -752,7 +756,7 @@ async function safetyChecks(pool) {
   if (missing.length) {
     throw new Error(
       `These tables don't exist yet: ${missing.join(", ")}.\n` +
-        "Start the app once against the demo database so it creates them (DATABASE_URL=<demo url> npm start), then rerun this.",
+        "Start the app once against the demo database so it creates them (npm start), then rerun this.",
     );
   }
 
@@ -773,7 +777,7 @@ async function safetyChecks(pool) {
     throw new Error(
       "STOPPING: this database already has data this script didn't create " +
         `(${counts.real_roster} roster, ${counts.real_attendance} attendance, ${counts.real_logs} logs, ${counts.other_staff} other staff).\n` +
-        "It may be a real database. Point DEMO_DATABASE_URL at a separate, empty demo database instead.",
+        "It may be a real database. Point DATABASE_URL at a separate, empty demo database instead.",
     );
   }
   return { hasDemoData: counts.demo_roster + counts.demo_logs > 0 };
@@ -897,10 +901,7 @@ async function writeEverything(client, data) {
 
 async function main() {
   if (!databaseUrl) {
-    console.error(
-      "Set DEMO_DATABASE_URL to your demo database's connection string (env var or a line in .env).\n" +
-        "This script intentionally ignores DATABASE_URL so it can never write to the real database by accident.",
-    );
+    console.error("DATABASE_URL isn't set (as an environment variable or in .env).");
     process.exit(1);
   }
 
