@@ -5,7 +5,8 @@
   "description": "Private coach daily logging prototype with attendance webhook ingestion.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed:demo": "node scripts/seed-demo-data.js"
   },
   "dependencies": {
     "jimp": "^0.22.12",
