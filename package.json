@@ -1,0 +1,17 @@
+{
+  "name": "coach-daily-logs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Private coach daily logging prototype with attendance webhook ingestion.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "jimp": "^0.22.12",
+    "pg": "^8.16.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

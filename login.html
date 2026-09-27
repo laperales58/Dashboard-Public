@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | CYBC Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="login-shell">
+      <section class="login-panel" aria-labelledby="login-title">
+        <p class="eyebrow">Private Prototype</p>
+        <h1 id="login-title">CYBC Dashboard</h1>
+        <p class="login-copy">Enter the admin password to continue.</p>
+
+        <form id="login-form" class="login-form">
+          <label class="field" for="password">
+            <span>Password</span>
+            <input id="password" type="password" required autofocus />
+          </label>
+          <button class="primary" type="submit">Log in</button>
+        </form>
+
+        <p id="login-error" class="login-error" role="alert"></p>
+      </section>
+    </main>
+
+    <script>
+      const form = document.querySelector("#login-form");
+      const error = document.querySelector("#login-error");
+
+      // Where to send the user after a successful login. The server sets this (see
+      // isAuthenticatedRequest's redirect in server.js) to wherever they were actually trying to
+      // go -- e.g. "/admin.html" when they clicked "Dashboard" -- so submitting the password takes
+      // them straight there instead of always landing on "/" and making them click again. Only
+      // trust a same-site relative path ("/something"), never "//host/..." or an absolute URL, so
+      // this can't be turned into an open redirect via a crafted ?next= value.
+      function safeNextPath() {
+        const raw = new URLSearchParams(window.location.search).get("next") || "";
+        if (raw.startsWith("/") && !raw.startsWith("//")) return raw;
+        return "/";
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        error.textContent = "";
+
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: document.querySelector("#password").value }),
+        });
+
+        if (!response.ok) {
+          error.textContent = "That password did not work.";
+          return;
+        }
+
+        window.location.href = safeNextPath();
+      });
+    </script>
+  </body>
+</html>

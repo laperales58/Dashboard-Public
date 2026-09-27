@@ -1,0 +1,1324 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CYBC Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dashboard-page">
+    <main class="dashboard-shell">
+      <section class="dashboard-panel" aria-labelledby="dashboard-title">
+        <div class="topbar dashboard-topbar">
+          <div>
+            <p class="eyebrow">Admin Reports</p>
+            <h1 id="dashboard-title">CYBC Dashboard</h1>
+          </div>
+          <div class="topbar-actions">
+            <a class="nav-link" href="/">New log</a>
+          </div>
+        </div>
+
+        <nav class="tab-bar" aria-label="Dashboard sections">
+          <button type="button" class="tab-button" data-tab="overview">Overview</button>
+          <button type="button" class="tab-button" data-tab="roster">Roster</button>
+          <button type="button" class="tab-button" data-tab="logs">Logs</button>
+          <button type="button" class="tab-button" data-tab="attendance">Attendance</button>
+          <button type="button" class="tab-button" data-tab="grants">Grants</button>
+          <button type="button" class="tab-button" data-tab="expenses">Expenses</button>
+          <button type="button" class="tab-button" data-tab="resources">Resources</button>
+        </nav>
+
+        <div data-tabs="overview">
+          <section aria-labelledby="overview-title">
+            <div class="report-heading">
+              <div>
+                <h2 id="overview-title">Overview</h2>
+              </div>
+              <div class="report-heading-actions">
+                <button type="button" class="secondary" id="refresh-overview">Refresh</button>
+              </div>
+            </div>
+            <p class="dashboard-status" id="overview-status" role="status" aria-live="polite"></p>
+            <section class="metric-grid" aria-label="Overview totals">
+              <article class="metric-card">
+                <span>Active Members (60d)</span>
+                <strong id="overview-metric-active-roster">0</strong>
+              </article>
+              <article class="metric-card">
+                <span>Logs (30d)</span>
+                <strong id="overview-metric-logs-30d">0</strong>
+              </article>
+              <article class="metric-card">
+                <span>Mentoring Hours (30d)</span>
+                <strong id="overview-metric-hours-30d">0</strong>
+              </article>
+              <article class="metric-card">
+                <span>Attendance Rate (30d)</span>
+                <strong id="overview-metric-attendance-rate">0%</strong>
+              </article>
+              <article class="metric-card">
+                <span>Avg Attendance/Day (30d)</span>
+                <strong id="overview-metric-avg-attendance">0</strong>
+              </article>
+              <article class="metric-card">
+                <span>Grant Forecast (Weighted)</span>
+                <strong id="overview-metric-grant-forecast">$0</strong>
+              </article>
+            </section>
+          </section>
+        </div>
+
+        <div data-tabs="logs">
+          <form class="report-filters" id="report-filters" autocomplete="off">
+            <label class="field" for="date-from">
+              <span>From</span>
+              <input id="date-from" name="dateFrom" type="date" />
+            </label>
+
+            <label class="field" for="date-to">
+              <span>To</span>
+              <input id="date-to" name="dateTo" type="date" />
+            </label>
+
+            <label class="field" for="period-filter">
+              <span>Trend</span>
+              <select id="period-filter" name="period">
+                <option value="week">Weekly</option>
+                <option value="month">Monthly</option>
+              </select>
+            </label>
+
+            <label class="field" for="coach-filter">
+              <span>Coach</span>
+              <select id="coach-filter" name="coach">
+                <option value="">All coaches</option>
+              </select>
+            </label>
+
+            <label class="field" for="youth-filter">
+              <span>Participant</span>
+              <input id="youth-filter" name="youth" type="search" placeholder="Search name" />
+            </label>
+
+            <label class="field" for="activity-filter">
+              <span>Activity</span>
+              <select id="activity-filter" name="activity">
+                <option value="">All activities</option>
+              </select>
+            </label>
+
+            <label class="field" for="focus-filter">
+              <span>Focus</span>
+              <select id="focus-filter" name="focus">
+                <option value="">All focuses</option>
+              </select>
+            </label>
+
+            <label class="field" for="gender-filter">
+              <span>Gender</span>
+              <select id="gender-filter" name="gender">
+                <option value="">All genders</option>
+              </select>
+            </label>
+
+            <label class="field" for="ethnicity-filter">
+              <span>Race/Ethnicity</span>
+              <select id="ethnicity-filter" name="ethnicity">
+                <option value="">All race/ethnicities</option>
+              </select>
+            </label>
+
+            <label class="field" for="school-filter">
+              <span>School</span>
+              <select id="school-filter" name="school">
+                <option value="">All schools</option>
+              </select>
+            </label>
+
+            <label class="field" for="competency-filter">
+              <span>Competency</span>
+              <select id="competency-filter" name="competency">
+                <option value="">All competencies</option>
+              </select>
+            </label>
+
+            <div class="filter-actions">
+              <button type="submit" class="primary">Apply</button>
+              <button type="button" class="secondary" id="refresh-report">Refresh</button>
+              <button type="button" class="secondary" id="clear-filters">Clear</button>
+            </div>
+          </form>
+
+          <div class="report-shortcuts" aria-label="Report date shortcuts">
+            <button type="button" class="secondary" data-report-range="week">This week</button>
+            <button type="button" class="secondary" data-report-range="last-week">Last week</button>
+            <button type="button" class="secondary" data-report-range="month">This month</button>
+            <button type="button" class="secondary" data-report-range="last-month">Last month</button>
+          </div>
+
+          <section class="dashboard-status" id="dashboard-status" role="status" aria-live="polite"></section>
+
+          <section class="metric-grid" aria-label="Report totals">
+            <article class="metric-card">
+              <span>Logs</span>
+              <strong id="metric-logs">0</strong>
+            </article>
+            <article class="metric-card">
+              <span>Interactions</span>
+              <strong id="metric-activities">0</strong>
+            </article>
+            <article class="metric-card">
+              <span>Total hours</span>
+              <strong id="metric-minutes">0</strong>
+            </article>
+            <article class="metric-card">
+              <span>Participants</span>
+              <strong id="metric-youth">0</strong>
+            </article>
+          </section>
+
+          <section class="report-summary-section" aria-labelledby="report-summary-title">
+            <div class="report-heading">
+              <h2 id="report-summary-title">Report Summary</h2>
+              <div class="report-heading-actions">
+                <button type="button" class="secondary" id="download-report-csv">Download report CSV</button>
+                <button type="button" class="primary" id="download-report-pdf">Download PDF Report</button>
+              </div>
+            </div>
+            <div class="summary-list" id="summary-list"></div>
+          </section>
+
+          <!-- Not shown on the dashboard: these canvases only exist so Chart.js has something to
+               render into for the "Download PDF Report" export, which is where the charts are
+               actually visible. Positioned off-screen (not display:none) so Chart.js can still
+               size them correctly. -->
+          <div class="pdf-chart-source" aria-hidden="true">
+            <div style="width: 860px; height: 260px"><canvas id="chart-trend"></canvas></div>
+            <div style="width: 420px; height: 260px"><canvas id="chart-by-coach"></canvas></div>
+            <div style="width: 420px; height: 260px"><canvas id="chart-by-activity"></canvas></div>
+            <div style="width: 420px; height: 260px"><canvas id="chart-by-gender"></canvas></div>
+            <div style="width: 420px; height: 260px"><canvas id="chart-by-ethnicity"></canvas></div>
+            <div style="width: 420px; height: 260px"><canvas id="chart-by-school"></canvas></div>
+            <div style="width: 420px; height: 260px"><canvas id="chart-by-competency"></canvas></div>
+          </div>
+        </div>
+
+        <div data-tabs="roster">
+          <nav class="tab-bar roster-subtab-bar" aria-label="Roster sections">
+            <button type="button" class="tab-button roster-subtab-button active" data-roster-view="people">People</button>
+            <button type="button" class="tab-button roster-subtab-button" data-roster-view="school-groups">School Groups</button>
+          </nav>
+
+          <div data-roster-view-panel="people">
+            <section class="roster-import-section" aria-labelledby="roster-import-title">
+              <div>
+                <h2 id="roster-import-title">Roster Import</h2>
+              </div>
+              <form class="roster-import-form" id="roster-import-form">
+                <label class="field" for="roster-csv">
+                  <span>ZenPlanner CSV or TSV (.txt)</span>
+                  <input id="roster-csv" type="file" accept=".csv,.txt,text/csv,text/plain,text/tab-separated-values" required />
+                </label>
+                <button type="submit" class="secondary">Import roster</button>
+              </form>
+              <p class="import-status" id="roster-import-status" role="status" aria-live="polite"></p>
+            </section>
+
+            <section class="roster-table-section" aria-labelledby="roster-table-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="roster-table-title">Roster</h2>
+                </div>
+                <div class="roster-table-actions">
+                  <input id="roster-search" type="search" placeholder="Search name" />
+                  <button type="button" class="secondary" id="add-roster-person">Add person</button>
+                  <button type="button" class="secondary" id="refresh-roster">Refresh</button>
+                  <button type="button" class="secondary" id="download-roster-csv">Download CSV</button>
+                </div>
+              </div>
+              <p class="roster-table-status" id="roster-table-status" role="status" aria-live="polite"></p>
+              <div class="table-wrap roster-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Status</th>
+                      <th>Birth date</th>
+                      <th class="numeric">Age</th>
+                      <th>Address</th>
+                      <th>First att.</th>
+                      <th>Race/Ethnicity</th>
+                      <th>Zipcode</th>
+                      <th>School</th>
+                      <th>Gender</th>
+                      <th class="numeric">Attendance</th>
+                      <th>Last seen</th>
+                      <th>Flags</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="roster-table-body"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <div data-roster-view-panel="school-groups" class="hidden">
+            <section class="school-groups-section" aria-labelledby="school-groups-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="school-groups-title">School Groups</h2>
+                  <p>Drag a school onto another to merge them. Click a name to rename, click × to split one back out.</p>
+                </div>
+                <div class="school-groups-actions">
+                  <button type="button" class="secondary" id="add-school-group">Add empty group</button>
+                  <button type="button" class="secondary" id="refresh-school-groups">Refresh</button>
+                </div>
+              </div>
+              <p class="school-groups-status" id="school-groups-status" role="status" aria-live="polite"></p>
+              <div class="school-groups-board" id="school-groups-board"></div>
+            </section>
+          </div>
+        </div>
+
+        <dialog id="roster-person-dialog" class="modal-dialog">
+          <form class="modal-form" id="roster-person-form">
+            <h2 id="roster-person-dialog-title">Add person</h2>
+            <input type="hidden" id="roster-person-id" />
+            <label class="field" for="roster-person-name">
+              <span>Full name</span>
+              <input id="roster-person-name" type="text" required />
+            </label>
+            <label class="field" for="roster-person-birth-date">
+              <span>Birth date</span>
+              <input id="roster-person-birth-date" type="date" />
+            </label>
+            <label class="field" for="roster-person-age">
+              <span>Age</span>
+              <input id="roster-person-age" type="number" min="0" />
+            </label>
+            <label class="field" for="roster-person-address">
+              <span>Address</span>
+              <input id="roster-person-address" type="text" />
+            </label>
+            <label class="field" for="roster-person-first-att-date">
+              <span>First att. date</span>
+              <input id="roster-person-first-att-date" type="date" />
+            </label>
+            <label class="field" for="roster-person-ethnicity">
+              <span>Race/Ethnicity</span>
+              <input id="roster-person-ethnicity" type="text" />
+            </label>
+            <label class="field" for="roster-person-zipcode">
+              <span>Zipcode</span>
+              <input id="roster-person-zipcode" type="text" />
+            </label>
+            <label class="field" for="roster-person-school">
+              <span>School</span>
+              <input id="roster-person-school" type="text" />
+            </label>
+            <label class="field" for="roster-person-gender">
+              <span>Gender</span>
+              <input id="roster-person-gender" type="text" />
+            </label>
+            <p class="import-status" id="roster-person-dialog-status" role="status" aria-live="polite"></p>
+            <div class="actions">
+              <button type="button" class="secondary" id="roster-person-cancel">Cancel</button>
+              <button type="submit" class="primary" id="roster-person-save">Save</button>
+            </div>
+          </form>
+        </dialog>
+
+        <div data-tabs="logs">
+          <section class="report-section full-report-section">
+            <div class="report-heading">
+              <h2>Recent Interactions</h2>
+              <button type="button" class="secondary" id="download-activity-csv">Download CSV</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Coach</th>
+                    <th>Participant</th>
+                    <th>Activity</th>
+                    <th>Focus</th>
+                    <th class="numeric">Hours</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-activities-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="report-section full-report-section">
+            <div class="report-heading">
+              <h2>Recent Logs</h2>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Coach</th>
+                    <th class="numeric">Interactions</th>
+                    <th class="numeric">Hours</th>
+                    <th>Response</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-logs-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="report-section full-report-section pattern-review-section" aria-labelledby="pattern-review-title">
+            <div class="report-heading">
+              <div>
+                <h2 id="pattern-review-title">AI Pattern Suggestions</h2>
+                <p class="section-subtitle">
+                  Logs auto-tag activities, focus areas, and program categories from a fixed keyword list as coaches
+                  type. When a coach has to manually pick or type something the list should have caught, this checks
+                  those flagged logs with Claude and suggests new trigger phrases -- approve one and it applies to
+                  every future log immediately, no code change needed.
+                </p>
+              </div>
+              <button type="button" class="secondary" id="check-pattern-gaps">Check for pattern gaps</button>
+            </div>
+            <p class="import-status" id="pattern-check-status" role="status" aria-live="polite"></p>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Label</th>
+                    <th>Suggested phrase</th>
+                    <th>Example</th>
+                    <th>Reason</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="pattern-suggestions-body"></tbody>
+              </table>
+            </div>
+            <p class="dashboard-status" id="pattern-suggestions-empty">No pending suggestions.</p>
+          </section>
+
+          <section class="report-section full-report-section pattern-review-section" aria-labelledby="pattern-phrases-title">
+            <div class="report-heading">
+              <h2 id="pattern-phrases-title">Active Custom Phrases</h2>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Label</th>
+                    <th>Phrase</th>
+                    <th>Added</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="pattern-phrases-body"></tbody>
+              </table>
+            </div>
+            <p class="dashboard-status" id="pattern-phrases-empty">No custom phrases approved yet.</p>
+          </section>
+        </div>
+
+        <div data-tabs="attendance">
+          <section class="roster-import-section" aria-labelledby="attendance-import-title">
+            <div>
+              <h2 id="attendance-import-title">Import Historical Attendance</h2>
+            </div>
+            <form class="roster-import-form" id="attendance-import-form">
+              <label class="field" for="attendance-import-csv">
+                <span>Attendance CSV</span>
+                <input id="attendance-import-csv" type="file" accept=".csv,text/csv" required />
+              </label>
+              <button type="submit" class="secondary">Import attendance</button>
+            </form>
+            <p class="import-status" id="attendance-import-status" role="status" aria-live="polite"></p>
+          </section>
+
+          <nav class="tab-bar roster-subtab-bar" aria-label="Attendance sections">
+            <button type="button" class="tab-button attendance-subtab-button active" data-attendance-view="daily">Daily</button>
+            <button type="button" class="tab-button attendance-subtab-button" data-attendance-view="reports">Reports</button>
+            <button type="button" class="tab-button attendance-subtab-button" data-attendance-view="lookup">Data Lookup</button>
+          </nav>
+
+          <p class="attendance-status" id="attendance-status" role="status" aria-live="polite"></p>
+
+          <div data-attendance-view-panel="daily">
+            <section class="attendance-section" aria-labelledby="attendance-title">
+              <div class="report-heading">
+                <h2 id="attendance-title">Daily Check-ins</h2>
+                <div class="attendance-actions">
+                  <input id="attendance-date" type="date" />
+                  <button type="button" class="secondary" id="attendance-today">Today</button>
+                  <button type="button" class="secondary" id="attendance-clear-date">All recent</button>
+                  <button type="button" class="secondary" id="add-attendance-record">Add check-in</button>
+                  <button type="button" class="secondary" id="refresh-attendance">Refresh</button>
+                  <button type="button" class="secondary" id="download-attendance-csv">Download CSV</button>
+                </div>
+              </div>
+              <div class="table-wrap attendance-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Name</th>
+                      <th>Class</th>
+                      <th>Source</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="attendance-table-body"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <div data-attendance-view-panel="reports" class="hidden">
+            <section class="report-section attendance-rate-section" aria-labelledby="attendance-rate-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="attendance-rate-title">Attendance Rate Report</h2>
+                </div>
+                <div class="attendance-actions">
+                  <label class="field" for="attendance-rate-year">
+                    <span>Year</span>
+                    <select id="attendance-rate-year"></select>
+                  </label>
+                  <button type="button" class="secondary" id="refresh-attendance-rate">Refresh</button>
+                  <button type="button" class="primary" id="download-attendance-rate-pdf">Download PDF Report</button>
+                </div>
+              </div>
+              <p class="attendance-rate-status" id="attendance-rate-status" role="status" aria-live="polite"></p>
+
+              <h3 class="attendance-rate-subheading">By Gender</h3>
+              <div class="chart-container"><canvas id="chart-attendance-rate-gender"></canvas></div>
+              <div class="table-wrap">
+                <table id="attendance-rate-gender-table">
+                  <thead>
+                    <tr>
+                      <th>Month</th>
+                      <th class="numeric">Program Dates</th>
+                      <th class="numeric">Male Rate</th>
+                      <th class="numeric">Male Avg/Day</th>
+                      <th class="numeric">Female Rate</th>
+                      <th class="numeric">Female Avg/Day</th>
+                      <th class="numeric">Other Rate</th>
+                      <th class="numeric">Other Avg/Day</th>
+                      <th class="numeric">Unknown Rate</th>
+                      <th class="numeric">Unknown Avg/Day</th>
+                    </tr>
+                  </thead>
+                  <tbody id="attendance-rate-gender-body"></tbody>
+                </table>
+              </div>
+
+              <h3 class="attendance-rate-subheading">By Age Group</h3>
+              <div class="chart-container"><canvas id="chart-attendance-rate-age"></canvas></div>
+              <div class="table-wrap">
+                <table id="attendance-rate-age-table">
+                  <thead>
+                    <tr>
+                      <th>Month</th>
+                      <th class="numeric">Program Dates</th>
+                      <th class="numeric">Youth Rate</th>
+                      <th class="numeric">Youth Avg/Day</th>
+                      <th class="numeric">Adult Rate</th>
+                      <th class="numeric">Adult Avg/Day</th>
+                      <th class="numeric">Unknown Rate</th>
+                      <th class="numeric">Unknown Avg/Day</th>
+                    </tr>
+                  </thead>
+                  <tbody id="attendance-rate-age-body"></tbody>
+                </table>
+              </div>
+
+              <h3 class="attendance-rate-subheading">By Tenure</h3>
+              <div class="chart-container"><canvas id="chart-attendance-rate-tenure"></canvas></div>
+              <div class="table-wrap">
+                <table id="attendance-rate-tenure-table">
+                  <thead>
+                    <tr>
+                      <th>Month</th>
+                      <th class="numeric">Program Dates</th>
+                      <th class="numeric">Under 6mo Rate</th>
+                      <th class="numeric">Under 6mo Avg/Day</th>
+                      <th class="numeric">6-12mo Rate</th>
+                      <th class="numeric">6-12mo Avg/Day</th>
+                      <th class="numeric">1-2yr Rate</th>
+                      <th class="numeric">1-2yr Avg/Day</th>
+                      <th class="numeric">2+yr Rate</th>
+                      <th class="numeric">2+yr Avg/Day</th>
+                      <th class="numeric">Unknown Rate</th>
+                      <th class="numeric">Unknown Avg/Day</th>
+                    </tr>
+                  </thead>
+                  <tbody id="attendance-rate-tenure-body"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <div data-attendance-view-panel="lookup" class="hidden">
+            <section class="attendance-section" aria-labelledby="attendance-lookup-title">
+              <div class="report-heading">
+                <h2 id="attendance-lookup-title">Data Lookup</h2>
+                <div class="attendance-actions">
+                  <label class="field" for="attendance-from">
+                    <span>From</span>
+                    <input id="attendance-from" type="date" />
+                  </label>
+                  <label class="field" for="attendance-to">
+                    <span>To</span>
+                    <input id="attendance-to" type="date" />
+                  </label>
+                  <button type="button" class="secondary" id="attendance-this-month">This month</button>
+                  <button type="button" class="secondary" id="attendance-last-month">Last month</button>
+                </div>
+              </div>
+              <section class="metric-grid attendance-metric-grid" aria-label="Attendance totals">
+                <article class="metric-card">
+                  <span>Check-ins</span>
+                  <strong id="attendance-metric-count">0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Unique people</span>
+                  <strong id="attendance-metric-people">0</strong>
+                </article>
+              </section>
+
+              <div class="report-heading">
+                <h3 class="attendance-rate-subheading">By Person</h3>
+                <div class="attendance-actions">
+                  <button type="button" class="secondary" id="download-attendance-by-person-csv">Download CSV</button>
+                </div>
+              </div>
+              <div class="table-wrap attendance-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th class="numeric">Visits</th>
+                      <th>First Visit</th>
+                      <th>Last Visit</th>
+                    </tr>
+                  </thead>
+                  <tbody id="attendance-by-person-body"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <dialog id="attendance-record-dialog" class="modal-dialog">
+          <form class="modal-form" id="attendance-record-form">
+            <h2 id="attendance-record-dialog-title">Add check-in</h2>
+            <input type="hidden" id="attendance-record-id" />
+            <label class="field" for="attendance-record-name">
+              <span>Full name</span>
+              <input id="attendance-record-name" type="text" required />
+            </label>
+            <label class="field" for="attendance-record-date">
+              <span>Date</span>
+              <input id="attendance-record-date" type="date" required />
+            </label>
+            <label class="field" for="attendance-record-class">
+              <span>Class</span>
+              <input id="attendance-record-class" type="text" />
+            </label>
+            <p class="import-status" id="attendance-record-dialog-status" role="status" aria-live="polite"></p>
+            <div class="actions">
+              <button type="button" class="secondary" id="attendance-record-cancel">Cancel</button>
+              <button type="submit" class="primary" id="attendance-record-save">Save</button>
+            </div>
+          </form>
+        </dialog>
+
+        <div data-tabs="grants">
+          <nav class="tab-bar roster-subtab-bar" aria-label="Grants sections">
+            <button type="button" class="tab-button grants-subtab-button active" data-grants-view="dashboard">Dashboard</button>
+            <button type="button" class="tab-button grants-subtab-button" data-grants-view="applications">Applications</button>
+            <button type="button" class="tab-button grants-subtab-button" data-grants-view="forecasting">Forecasting</button>
+            <button type="button" class="tab-button grants-subtab-button" data-grants-view="budget">Budget</button>
+          </nav>
+
+          <div data-grants-view-panel="dashboard">
+            <section aria-labelledby="grants-dashboard-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="grants-dashboard-title">Grants Dashboard</h2>
+                </div>
+                <div class="report-heading-actions">
+                  <label class="field" for="grants-year">
+                    <span>Year</span>
+                    <select id="grants-year"></select>
+                  </label>
+                  <button type="button" class="secondary" id="refresh-grants-dashboard">Refresh</button>
+                </div>
+              </div>
+              <p class="dashboard-status" id="grants-dashboard-status" role="status" aria-live="polite"></p>
+
+              <section class="metric-grid" aria-label="Grant totals">
+                <article class="metric-card">
+                  <span>Weighted Forecast</span>
+                  <strong id="grants-metric-weighted">$0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Total Awarded</span>
+                  <strong id="grants-metric-awarded">$0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Pipeline</span>
+                  <strong id="grants-metric-pipeline">$0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Win Rate</span>
+                  <strong id="grants-metric-winrate">0%</strong>
+                </article>
+              </section>
+
+              <section class="grants-goal-section">
+                <div class="report-heading">
+                  <h3>Revenue Goal</h3>
+                  <div class="report-heading-actions">
+                    <input id="grants-goal-input" type="number" min="0" step="1000" placeholder="Annual goal" />
+                    <button type="button" class="secondary" id="save-grants-goal">Save Goal</button>
+                  </div>
+                </div>
+                <div class="grants-goal-progress-track">
+                  <div class="grants-goal-progress-fill" id="grants-goal-progress-fill"></div>
+                </div>
+                <p id="grants-goal-summary" class="grants-goal-summary"></p>
+              </section>
+
+              <section class="grants-confidence-section">
+                <h3>Confidence Breakdown</h3>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Confidence</th>
+                        <th class="numeric">Grants</th>
+                        <th class="numeric">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody id="grants-confidence-body"></tbody>
+                  </table>
+                </div>
+              </section>
+            </section>
+          </div>
+
+          <div data-grants-view-panel="applications" class="hidden">
+            <section aria-labelledby="grants-applications-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="grants-applications-title">Grant Applications</h2>
+                </div>
+                <div class="report-heading-actions">
+                  <button type="button" class="secondary" id="refresh-grants">Refresh</button>
+                  <button type="button" class="primary" id="add-grant">+ Add Grant</button>
+                </div>
+              </div>
+              <p class="dashboard-status" id="grants-applications-status" role="status" aria-live="polite"></p>
+              <div id="grants-applications-groups"></div>
+            </section>
+          </div>
+
+          <div data-grants-view-panel="forecasting" class="hidden">
+            <section aria-labelledby="grants-forecasting-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="grants-forecasting-title">Forecasting</h2>
+                </div>
+                <div class="report-heading-actions">
+                  <button type="button" class="secondary" id="refresh-grants-forecast">Refresh</button>
+                </div>
+              </div>
+              <p class="dashboard-status" id="grants-forecast-status" role="status" aria-live="polite"></p>
+
+              <section class="metric-grid" aria-label="Forecast totals">
+                <article class="metric-card">
+                  <span>Confirmed Total</span>
+                  <strong id="grants-forecast-confirmed-total">$0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Anticipated Total</span>
+                  <strong id="grants-forecast-anticipated-total">$0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Combined Total</span>
+                  <strong id="grants-forecast-combined-total">$0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Gap to Goal</span>
+                  <strong id="grants-forecast-goal-gap">$0</strong>
+                </article>
+              </section>
+
+              <div id="grants-forecast-groups"></div>
+            </section>
+          </div>
+
+          <div data-grants-view-panel="budget" class="hidden">
+            <section aria-labelledby="grants-budget-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="grants-budget-title">Budget</h2>
+                </div>
+                <div class="report-heading-actions">
+                  <button type="button" class="secondary" id="refresh-grants-budget">Refresh</button>
+                </div>
+              </div>
+              <p class="dashboard-status" id="grants-budget-status" role="status" aria-live="polite"></p>
+
+              <section class="metric-grid" aria-label="Budget totals">
+                <article class="metric-card">
+                  <span>Revenue</span>
+                  <strong id="grants-budget-revenue">$0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Expenses</span>
+                  <strong id="grants-budget-expenses">$0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Net</span>
+                  <strong id="grants-budget-net">$0</strong>
+                </article>
+              </section>
+
+              <section class="grants-revenue-section">
+                <div class="report-heading">
+                  <h3>Revenue</h3>
+                  <div class="grants-confidence-filters" id="grants-budget-confidence-filters">
+                    <button type="button" class="secondary active" data-budget-confidence="">All</button>
+                    <button type="button" class="secondary" data-budget-confidence="Confirmed">Confirmed</button>
+                    <button type="button" class="secondary" data-budget-confidence="Optimistic">Optimistic</button>
+                    <button type="button" class="secondary" data-budget-confidence="Hopeful">Hopeful</button>
+                    <button type="button" class="secondary" data-budget-confidence="Reach">Reach</button>
+                  </div>
+                </div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Grant</th>
+                        <th>Confidence</th>
+                        <th>Quarter</th>
+                        <th class="numeric">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody id="grants-budget-revenue-body"></tbody>
+                  </table>
+                </div>
+              </section>
+            </section>
+          </div>
+        </div>
+
+        <div data-tabs="expenses">
+          <section aria-labelledby="expenses-title">
+            <div class="report-heading">
+              <div>
+                <h2 id="expenses-title">Expenses</h2>
+              </div>
+              <div class="report-heading-actions">
+                <label class="field" for="expenses-year">
+                  <span>Year</span>
+                  <select id="expenses-year"></select>
+                </label>
+                <button type="button" class="secondary" id="manage-categories-button">Manage Categories</button>
+                <button type="button" class="secondary" id="manage-receipt-options-button">Manage Cardholders &amp; Payment</button>
+                <button type="button" class="secondary" id="refresh-expenses">Refresh</button>
+              </div>
+            </div>
+
+            <section class="grants-expenses-section">
+              <div class="grants-receipt-upload">
+                <label class="field" for="grants-receipt-file">
+                  <span>Upload Receipt Photo or PDF</span>
+                  <input id="grants-receipt-file" type="file" accept="image/*,application/pdf" />
+                </label>
+                <label class="field" for="grants-receipt-cardholder">
+                  <span>Cardholder</span>
+                  <select id="grants-receipt-cardholder">
+                    <option value="">Choose...</option>
+                  </select>
+                </label>
+                <label class="field" for="grants-receipt-payment-method">
+                  <span>Payment Method</span>
+                  <select id="grants-receipt-payment-method">
+                    <option value="">Choose...</option>
+                  </select>
+                </label>
+                <button type="button" class="secondary" id="grants-receipt-upload-button">Read Receipt</button>
+              </div>
+              <p class="import-status" id="grants-receipt-upload-status" role="status" aria-live="polite"></p>
+
+              <div class="grants-receipts-review" id="grants-receipts-review-section">
+                <h4>Receipts to Review</h4>
+                <p class="dashboard-status" id="grants-receipts-review-empty">No receipts waiting for review.</p>
+                <div class="receipts-review-list" id="grants-receipts-review-body"></div>
+              </div>
+
+              <div class="all-receipts-section">
+                <h4>All Receipts</h4>
+                <p class="dashboard-status" id="all-receipts-empty">No receipts uploaded yet.</p>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Photo</th>
+                        <th>Vendor</th>
+                        <th>Date</th>
+                        <th>Cardholder</th>
+                        <th>Payment Method</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Note</th>
+                        <th class="numeric">Amount</th>
+                        <th>Grant</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="all-receipts-body"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <form class="grants-expense-form" id="grants-expense-form">
+                <label class="field" for="grants-expense-category">
+                  <span>Category</span>
+                  <input id="grants-expense-category" type="text" />
+                </label>
+                <label class="field" for="grants-expense-description">
+                  <span>Description</span>
+                  <input id="grants-expense-description" type="text" />
+                </label>
+                <label class="field" for="grants-expense-note">
+                  <span>Note</span>
+                  <input id="grants-expense-note" type="text" placeholder="e.g. lunch for meeting" />
+                </label>
+                <label class="field" for="grants-expense-cardholder">
+                  <span>Cardholder</span>
+                  <select id="grants-expense-cardholder">
+                    <option value="">--</option>
+                  </select>
+                </label>
+                <label class="field" for="grants-expense-payment-method">
+                  <span>Payment Method</span>
+                  <select id="grants-expense-payment-method">
+                    <option value="">--</option>
+                  </select>
+                </label>
+                <label class="field" for="grants-expense-amount">
+                  <span>Amount</span>
+                  <input id="grants-expense-amount" type="number" min="0" step="0.01" />
+                </label>
+                <button type="submit" class="secondary">+ Add Expense</button>
+              </form>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Category</th>
+                      <th>Description</th>
+                      <th>Note</th>
+                      <th>Cardholder</th>
+                      <th>Payment Method</th>
+                      <th class="numeric">Amount</th>
+                      <th>Grant</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="grants-expenses-body"></tbody>
+                </table>
+              </div>
+            </section>
+          </section>
+        </div>
+
+        <div data-tabs="resources">
+          <nav class="tab-bar roster-subtab-bar" aria-label="Resources sections">
+            <button type="button" class="tab-button resources-subtab-button active" data-resources-view="pto">PTO Requests</button>
+            <button type="button" class="tab-button resources-subtab-button" data-resources-view="mileage">Mileage</button>
+            <button type="button" class="tab-button resources-subtab-button" data-resources-view="schedule">Schedule</button>
+            <button type="button" class="tab-button resources-subtab-button" data-resources-view="staff">Staff</button>
+          </nav>
+
+          <div data-resources-view-panel="pto">
+            <section aria-labelledby="pto-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="pto-title">PTO Requests</h2>
+                </div>
+                <div class="report-heading-actions">
+                  <select id="pto-status-filter">
+                    <option value="">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="denied">Denied</option>
+                  </select>
+                  <button type="button" class="secondary" id="refresh-pto">Refresh</button>
+                </div>
+              </div>
+
+              <form class="pto-request-form" id="pto-request-form">
+                <label class="field" for="pto-staff">
+                  <span>Staff</span>
+                  <select id="pto-staff" required></select>
+                </label>
+                <label class="field" for="pto-start-date">
+                  <span>Start date</span>
+                  <input id="pto-start-date" type="date" required />
+                </label>
+                <label class="field" for="pto-end-date">
+                  <span>End date</span>
+                  <input id="pto-end-date" type="date" />
+                </label>
+                <label class="field" for="pto-leave-type">
+                  <span>Type</span>
+                  <select id="pto-leave-type"></select>
+                </label>
+                <label class="field" for="pto-note">
+                  <span>Note</span>
+                  <input id="pto-note" type="text" placeholder="e.g. family trip" />
+                </label>
+                <button type="submit" class="secondary" id="pto-request-button">Request PTO</button>
+              </form>
+              <p class="import-status" id="pto-status" role="status" aria-live="polite"></p>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Staff</th>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Type</th>
+                      <th>Note</th>
+                      <th>Status</th>
+                      <th>Submitted</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pto-requests-body"></tbody>
+                </table>
+              </div>
+              <p class="dashboard-status" id="pto-requests-empty">No PTO requests yet.</p>
+            </section>
+          </div>
+
+          <div data-resources-view-panel="mileage" class="hidden">
+            <section aria-labelledby="mileage-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="mileage-title">Mileage</h2>
+                </div>
+                <div class="report-heading-actions">
+                  <select id="mileage-status-filter">
+                    <option value="">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="denied">Denied</option>
+                  </select>
+                  <button type="button" class="secondary" id="refresh-mileage">Refresh</button>
+                </div>
+              </div>
+
+              <form class="pto-request-form" id="mileage-request-form">
+                <label class="field" for="mileage-staff">
+                  <span>Staff</span>
+                  <select id="mileage-staff" required></select>
+                </label>
+                <label class="field" for="mileage-trip-date">
+                  <span>Date</span>
+                  <input id="mileage-trip-date" type="date" required />
+                </label>
+                <label class="field" for="mileage-start-address">
+                  <span>Start address</span>
+                  <input id="mileage-start-address" type="text" placeholder="e.g. CYBC gym" />
+                </label>
+                <label class="field" for="mileage-end-address">
+                  <span>End address</span>
+                  <input id="mileage-end-address" type="text" placeholder="e.g. Downtown YMCA" />
+                </label>
+                <label class="field" for="mileage-purpose">
+                  <span>Purpose</span>
+                  <input id="mileage-purpose" type="text" placeholder="e.g. away tournament" />
+                </label>
+                <label class="field" for="mileage-miles">
+                  <span>Miles</span>
+                  <input id="mileage-miles" type="number" min="0" step="0.1" required />
+                </label>
+                <label class="field" for="mileage-note">
+                  <span>Note</span>
+                  <input id="mileage-note" type="text" placeholder="optional" />
+                </label>
+                <label class="field" for="mileage-photos">
+                  <span>Photos (odometer, maps)</span>
+                  <input id="mileage-photos" type="file" accept="image/*" multiple />
+                </label>
+                <button type="submit" class="secondary" id="mileage-request-button">Log Mileage</button>
+              </form>
+              <p class="import-status" id="mileage-status" role="status" aria-live="polite"></p>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Staff</th>
+                      <th>Date</th>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Purpose</th>
+                      <th class="numeric">Miles</th>
+                      <th>Note</th>
+                      <th>Photos</th>
+                      <th>Status</th>
+                      <th>Submitted</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mileage-requests-body"></tbody>
+                </table>
+              </div>
+              <p class="dashboard-status" id="mileage-requests-empty">No mileage logged yet.</p>
+            </section>
+          </div>
+
+          <div data-resources-view-panel="schedule" class="hidden">
+            <section aria-labelledby="schedule-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="schedule-title">Schedule</h2>
+                  <p class="section-subtitle">Editable here; coaches see a read-only copy from their log page.</p>
+                </div>
+                <div class="report-heading-actions">
+                  <select id="schedule-week-select"></select>
+                  <button type="button" class="secondary" id="new-schedule-week">+ New week</button>
+                  <button type="button" class="row-action-button danger" id="delete-schedule-week">Delete week</button>
+                </div>
+              </div>
+
+              <p class="import-status" id="schedule-status" role="status" aria-live="polite"></p>
+
+              <div class="table-wrap">
+                <table class="schedule-grid-table">
+                  <thead>
+                    <tr id="schedule-grid-header-row"></tr>
+                  </thead>
+                  <tbody id="schedule-grid-body"></tbody>
+                </table>
+              </div>
+              <p class="dashboard-status" id="schedule-empty">No weeks yet -- create one to get started.</p>
+            </section>
+          </div>
+
+          <div data-resources-view-panel="staff" class="hidden">
+            <section aria-labelledby="staff-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="staff-title">Staff</h2>
+                  <p class="section-subtitle">
+                    Deactivate someone who's away instead of deleting them -- their name stays on past
+                    PTO, mileage, schedule, and log history, and they can be reactivated any time.
+                  </p>
+                </div>
+              </div>
+
+              <form class="pto-request-form" id="staff-add-form">
+                <label class="field" for="staff-add-name">
+                  <span>Name</span>
+                  <input id="staff-add-name" type="text" placeholder="e.g. Marisol" required />
+                </label>
+                <button type="submit" class="secondary" id="staff-add-button">Add Staff</button>
+              </form>
+              <p class="import-status" id="staff-status" role="status" aria-live="polite"></p>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="staff-body"></tbody>
+                </table>
+              </div>
+              <p class="dashboard-status" id="staff-empty">No staff yet.</p>
+            </section>
+          </div>
+        </div>
+
+        <dialog id="schedule-week-dialog" class="modal-dialog">
+          <form class="modal-form" id="schedule-week-form">
+            <h2>New week</h2>
+            <label class="field" for="schedule-week-start">
+              <span>Week starts</span>
+              <input id="schedule-week-start" type="date" required />
+            </label>
+            <label class="field checkbox-field hidden" for="schedule-week-copy-previous" id="schedule-week-copy-field">
+              <input id="schedule-week-copy-previous" type="checkbox" checked />
+              <span id="schedule-week-copy-previous-label">Copy shifts from the previous week</span>
+            </label>
+            <p class="import-status" id="schedule-week-dialog-status" role="status" aria-live="polite"></p>
+            <div class="actions">
+              <button type="button" class="secondary" id="schedule-week-cancel">Cancel</button>
+              <button type="submit" class="primary" id="schedule-week-save">Create</button>
+            </div>
+          </form>
+        </dialog>
+
+        <dialog id="grant-dialog" class="modal-dialog">
+          <form class="modal-form" id="grant-form">
+            <h2 id="grant-dialog-title">Add grant</h2>
+            <input type="hidden" id="grant-id" />
+            <label class="field" for="grant-name">
+              <span>Grant name</span>
+              <input id="grant-name" type="text" required />
+            </label>
+            <label class="field" for="grant-org">
+              <span>Org / Funder</span>
+              <input id="grant-org" type="text" />
+            </label>
+            <label class="field" for="grant-status">
+              <span>Status</span>
+              <select id="grant-status">
+                <option>Not Started</option>
+                <option>Submitted</option>
+                <option>Awarded</option>
+                <option>Rejected</option>
+              </select>
+            </label>
+            <label class="field" for="grant-confidence">
+              <span>Confidence</span>
+              <select id="grant-confidence">
+                <option>Confirmed</option>
+                <option>Optimistic</option>
+                <option>Hopeful</option>
+                <option>Reach</option>
+                <option>Unlikely</option>
+              </select>
+            </label>
+            <label class="field" for="grant-year">
+              <span>Year</span>
+              <input id="grant-year" type="number" min="2000" max="2100" required />
+            </label>
+            <label class="field" for="grant-quarter">
+              <span>Quarter</span>
+              <select id="grant-quarter">
+                <option value="">--</option>
+                <option value="1">Q1</option>
+                <option value="2">Q2</option>
+                <option value="3">Q3</option>
+                <option value="4">Q4</option>
+              </select>
+            </label>
+            <label class="field" for="grant-amount">
+              <span>Amount</span>
+              <input id="grant-amount" type="number" min="0" step="0.01" required />
+            </label>
+            <label class="field" for="grant-app-opens">
+              <span>App opens</span>
+              <input id="grant-app-opens" type="date" />
+            </label>
+            <label class="field" for="grant-app-closes">
+              <span>App closes</span>
+              <input id="grant-app-closes" type="date" />
+            </label>
+            <label class="field" for="grant-submitted-date">
+              <span>Submitted</span>
+              <input id="grant-submitted-date" type="date" />
+            </label>
+            <label class="field" for="grant-notes">
+              <span>Notes</span>
+              <input id="grant-notes" type="text" />
+            </label>
+            <p class="import-status" id="grant-dialog-status" role="status" aria-live="polite"></p>
+            <div class="actions">
+              <button type="button" class="secondary" id="grant-cancel">Cancel</button>
+              <button type="submit" class="primary" id="grant-save">Save</button>
+            </div>
+          </form>
+        </dialog>
+
+        <dialog id="categories-dialog" class="modal-dialog categories-dialog">
+          <h2>Manage Categories</h2>
+          <p class="categories-dialog-help">
+            These are the categories receipts get sorted into (the manual "+ Add Expense" form
+            still takes any text you type). Reordering changes the order shown in dropdowns;
+            deleting a category doesn't change any expense already recorded with it.
+          </p>
+          <p class="import-status" id="categories-dialog-status" role="status" aria-live="polite"></p>
+
+          <ul class="categories-list" id="categories-list"></ul>
+
+          <form class="categories-add-form" id="categories-add-form">
+            <label class="field" for="category-new-name">
+              <span>New category</span>
+              <input id="category-new-name" type="text" required />
+            </label>
+            <button type="submit" class="secondary">+ Add Category</button>
+          </form>
+
+          <div class="actions">
+            <button type="button" class="primary" id="categories-dialog-close">Close</button>
+          </div>
+        </dialog>
+
+        <dialog id="receipt-options-dialog" class="modal-dialog categories-dialog">
+          <h2>Cardholders &amp; Payment Methods</h2>
+          <p class="categories-dialog-help">
+            These fill the Cardholder and Payment method dropdowns on receipts and expenses.
+            Reordering changes the order shown in dropdowns; renaming or deleting one doesn't
+            change any expense already recorded with it.
+          </p>
+          <p class="import-status" id="receipt-options-dialog-status" role="status" aria-live="polite"></p>
+
+          <h3>Cardholders</h3>
+          <ul class="categories-list" id="receipt-options-cardholder-list"></ul>
+          <form class="categories-add-form" id="receipt-options-cardholder-form" data-kind="cardholder">
+            <label class="field" for="receipt-options-cardholder-name">
+              <span>New cardholder</span>
+              <input id="receipt-options-cardholder-name" type="text" required />
+            </label>
+            <button type="submit" class="secondary">+ Add Cardholder</button>
+          </form>
+
+          <h3>Payment methods</h3>
+          <ul class="categories-list" id="receipt-options-payment_method-list"></ul>
+          <form class="categories-add-form" id="receipt-options-payment_method-form" data-kind="payment_method">
+            <label class="field" for="receipt-options-payment_method-name">
+              <span>New payment method</span>
+              <input id="receipt-options-payment_method-name" type="text" placeholder="e.g. Debit ending 1234" required />
+            </label>
+            <button type="submit" class="secondary">+ Add Payment Method</button>
+          </form>
+
+          <div class="actions">
+            <button type="button" class="primary" id="receipt-options-dialog-close">Close</button>
+          </div>
+        </dialog>
+      </section>
+
+      <p class="app-footer">Built by Luis Alberto Perales</p>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="table-filters.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CYBC Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="entry-panel" aria-labelledby="page-title">
+        <div class="topbar">
+          <div>
+            <p class="eyebrow">Daily Activity Log</p>
+            <h1 id="page-title">CYBC Dashboard</h1>
+          </div>
+          <div class="topbar-actions">
+            <a class="nav-link" href="/admin.html">Dashboard</a>
+            <div class="status-pill" id="entry-status">Draft</div>
+          </div>
+        </div>
+
+        <nav class="tab-bar" aria-label="Sections">
+          <button type="button" class="tab-button" data-tab="logs">Logs</button>
+          <button type="button" class="tab-button" data-tab="pto-mileage">PTO / Mileage</button>
+          <button type="button" class="tab-button" data-tab="schedule">Schedule</button>
+        </nav>
+
+        <div data-tabs="logs">
+          <form id="log-form" autocomplete="off">
+            <div class="form-grid">
+              <label class="field" for="coach">
+                <span>Coach</span>
+                <select id="coach" aria-label="Coach" required></select>
+              </label>
+
+              <label class="field" for="session-date">
+                <span>Session date</span>
+                <input id="session-date" type="date" required />
+              </label>
+
+            </div>
+
+            <section class="log-section" aria-labelledby="response-title">
+              <div class="section-heading">
+                <div>
+                  <h2 id="response-title">Response</h2>
+                  <p>Type the day’s coaching activity in your own words.</p>
+                </div>
+              </div>
+
+              <label class="field response-field" for="coach-response">
+                <span>Coach response</span>
+                <div class="response-autocomplete">
+                  <textarea
+                    id="coach-response"
+                    rows="12"
+                    required
+                    placeholder="Example: Worked with Saida T for 15 minutes on footwork drills and Miroslava M for 30 minutes on blocking and counter drills."
+                  ></textarea>
+                  <div id="name-suggestions" class="name-suggestions" role="listbox" aria-label="Roster name suggestions"></div>
+                </div>
+              </label>
+            </section>
+
+            <section class="log-section participant-section" aria-labelledby="confirm-title">
+              <div class="section-heading">
+                <div>
+                  <h2 id="confirm-title">Confirm activity</h2>
+                  <p>Review the detected activity and minutes before saving.</p>
+                </div>
+              </div>
+
+              <div id="participant-list" class="participant-list" aria-live="polite"></div>
+              <datalist id="roster-name-options"></datalist>
+              <datalist id="focus-options"></datalist>
+              <button type="button" class="secondary add-manual-entry" id="add-manual-entry">Add person/activity</button>
+            </section>
+
+            <section class="flags" id="flags" aria-live="polite"></section>
+
+            <div class="actions">
+              <button type="button" class="secondary" id="clear-form">Clear</button>
+              <button type="submit" class="primary">Submit log</button>
+            </div>
+          </form>
+
+          <section class="submitted-panel hidden" id="submitted-panel" aria-labelledby="submitted-title">
+            <p class="eyebrow">Log Sent</p>
+            <h2 id="submitted-title">Thank you. Your coach log was submitted.</h2>
+            <p>The activity details were sent successfully.</p>
+            <button type="button" class="primary" id="new-log">Submit another log</button>
+          </section>
+        </div>
+
+        <div data-tabs="pto-mileage">
+          <nav class="tab-bar roster-subtab-bar" aria-label="PTO and Mileage sections">
+            <button type="button" class="tab-button resources-subtab-button active" data-resources-view="pto">PTO Requests</button>
+            <button type="button" class="tab-button resources-subtab-button" data-resources-view="mileage">Mileage</button>
+          </nav>
+
+          <div data-resources-view-panel="pto">
+            <section aria-labelledby="pto-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="pto-title">PTO Requests</h2>
+                </div>
+                <div class="report-heading-actions">
+                  <select id="pto-status-filter">
+                    <option value="">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="denied">Denied</option>
+                  </select>
+                  <button type="button" class="secondary" id="refresh-pto">Refresh</button>
+                </div>
+              </div>
+
+              <form class="pto-request-form" id="pto-request-form">
+                <label class="field" for="pto-staff">
+                  <span>Staff</span>
+                  <select id="pto-staff" required></select>
+                </label>
+                <label class="field" for="pto-start-date">
+                  <span>Start date</span>
+                  <input id="pto-start-date" type="date" required />
+                </label>
+                <label class="field" for="pto-end-date">
+                  <span>End date</span>
+                  <input id="pto-end-date" type="date" />
+                </label>
+                <label class="field" for="pto-leave-type">
+                  <span>Type</span>
+                  <select id="pto-leave-type"></select>
+                </label>
+                <label class="field" for="pto-note">
+                  <span>Note</span>
+                  <input id="pto-note" type="text" placeholder="e.g. family trip" />
+                </label>
+                <button type="submit" class="secondary" id="pto-request-button">Request PTO</button>
+              </form>
+              <p class="import-status" id="pto-status" role="status" aria-live="polite"></p>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Staff</th>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Type</th>
+                      <th>Note</th>
+                      <th>Status</th>
+                      <th>Submitted</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pto-requests-body"></tbody>
+                </table>
+              </div>
+              <p class="dashboard-status" id="pto-requests-empty">No PTO requests yet.</p>
+            </section>
+          </div>
+
+          <div data-resources-view-panel="mileage" class="hidden">
+            <section aria-labelledby="mileage-title">
+              <div class="report-heading">
+                <div>
+                  <h2 id="mileage-title">Mileage</h2>
+                </div>
+                <div class="report-heading-actions">
+                  <select id="mileage-status-filter">
+                    <option value="">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="denied">Denied</option>
+                  </select>
+                  <button type="button" class="secondary" id="refresh-mileage">Refresh</button>
+                </div>
+              </div>
+
+              <form class="pto-request-form" id="mileage-request-form">
+                <label class="field" for="mileage-staff">
+                  <span>Staff</span>
+                  <select id="mileage-staff" required></select>
+                </label>
+                <label class="field" for="mileage-trip-date">
+                  <span>Date</span>
+                  <input id="mileage-trip-date" type="date" required />
+                </label>
+                <label class="field" for="mileage-start-address">
+                  <span>Start address</span>
+                  <input id="mileage-start-address" type="text" placeholder="e.g. CYBC gym" />
+                </label>
+                <label class="field" for="mileage-end-address">
+                  <span>End address</span>
+                  <input id="mileage-end-address" type="text" placeholder="e.g. Downtown YMCA" />
+                </label>
+                <label class="field" for="mileage-purpose">
+                  <span>Purpose</span>
+                  <input id="mileage-purpose" type="text" placeholder="e.g. away tournament" />
+                </label>
+                <label class="field" for="mileage-miles">
+                  <span>Miles</span>
+                  <input id="mileage-miles" type="number" min="0" step="0.1" required />
+                </label>
+                <label class="field" for="mileage-note">
+                  <span>Note</span>
+                  <input id="mileage-note" type="text" placeholder="optional" />
+                </label>
+                <label class="field" for="mileage-photos">
+                  <span>Photos (odometer, maps)</span>
+                  <input id="mileage-photos" type="file" accept="image/*" multiple />
+                </label>
+                <button type="submit" class="secondary" id="mileage-request-button">Log Mileage</button>
+              </form>
+              <p class="import-status" id="mileage-status" role="status" aria-live="polite"></p>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Staff</th>
+                      <th>Date</th>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Purpose</th>
+                      <th class="numeric">Miles</th>
+                      <th>Note</th>
+                      <th>Photos</th>
+                      <th>Status</th>
+                      <th>Submitted</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mileage-requests-body"></tbody>
+                </table>
+              </div>
+              <p class="dashboard-status" id="mileage-requests-empty">No mileage logged yet.</p>
+            </section>
+          </div>
+        </div>
+
+        <div data-tabs="schedule">
+          <section aria-labelledby="schedule-title">
+            <div class="report-heading">
+              <div>
+                <h2 id="schedule-title">Schedule</h2>
+                <p class="section-subtitle">Read-only. Ask the office to update your hours if something looks off.</p>
+              </div>
+              <div class="report-heading-actions">
+                <select id="schedule-view-week-select"></select>
+              </div>
+            </div>
+
+            <p class="import-status" id="schedule-view-status" role="status" aria-live="polite"></p>
+
+            <div class="table-wrap">
+              <table class="schedule-grid-table">
+                <thead>
+                  <tr id="schedule-view-header-row"></tr>
+                </thead>
+                <tbody id="schedule-view-body"></tbody>
+              </table>
+            </div>
+            <p class="dashboard-status" id="schedule-view-empty">No schedule has been posted yet.</p>
+          </section>
+        </div>
+      </section>
+
+      <p class="app-footer">Built by Luis Alberto Perales</p>
+    </main>
+
+    <script src="app.js"></script>
+    <script src="resources.js"></script>
+  </body>
+</html>
