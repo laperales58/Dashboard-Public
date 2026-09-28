@@ -135,6 +135,7 @@ function isPublicPath(url) {
     url.pathname === "/" ||
     url.pathname === "/index.html" ||
     url.pathname === "/app.js" ||
+    url.pathname === "/demo-banner.js" ||
     url.pathname === "/styles.css" ||
     url.pathname === "/resources.html" ||
     url.pathname === "/resources.js" ||
